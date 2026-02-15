@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Quiz - Weekend Routines</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #628141;   /* Groen */
+            --color-secondary: #B0BE9C; /* Lichtgroen */
+            --color-bg: #D9E5F3;        /* Lichtblauw */
+            --color-dark: #093A47;      /* Donkerblauw/Petrol */
+        }
+
+        body {
+            background-color: var(--color-bg);
+            font-family: 'Poppins', sans-serif;
+            font-weight: 200;
+            color: var(--color-dark);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1, h2, .question-title {
+            font-weight: 600;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            box-sizing: border-box;
+        }
+
+        /* --- NIEUWE STIJLEN VOOR KNOPPEN --- */
+        .top-nav {
+            width: 100%;
+            display: flex;
+            justify-content: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .nav-btn {
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-home {
+            background-color: var(--color-dark);
+            color: white;
+        }
+
+        .btn-home:hover {
+            background-color: #0d5263;
+        }
+
+        .btn-next {
+            background-color: var(--color-primary);
+            color: white;
+        }
+
+        .btn-next:hover {
+            background-color: #4a6330;
+        }
+
+        .footer-nav {
+            margin-top: 30px;
+            display: none; /* Verborgen tot na de quiz */
+            justify-content: center;
+            gap: 15px;
+            border-top: 2px solid var(--color-secondary);
+            padding-top: 20px;
+        }
+        /* ----------------------------------- */
+
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            height: 0;
+            overflow: hidden;
+            border-radius: 10px;
+            background: #000;
+            margin-bottom: 30px;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .quiz-section {
+            border-top: 2px solid var(--color-secondary);
+            padding-top: 20px;
+        }
+
+        .question {
+            margin-bottom: 30px;
+        }
+
+        .question-title {
+            margin-bottom: 12px;
+            font-size: 1.1em;
+            display: block;
+            line-height: 1.4;
+        }
+
+        .instruction {
+            font-size: 0.85em;
+            color: var(--color-primary);
+            margin-bottom: 5px;
+            display: block;
+            font-weight: 600;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        label {
+            padding: 12px;
+            background: #f8fafc;
+            border: 1px solid var(--color-secondary);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        label:hover {
+            background: var(--color-secondary);
+            color: white;
+        }
+
+        input[type="radio"] {
+            margin-right: 12px;
+            accent-color: var(--color-primary);
+            transform: scale(1.2);
+        }
+
+        #submit-btn {
+            background-color: var(--color-primary);
+            color: white;
+            border: none;
+            padding: 18px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            transition: background 0.3s;
+        }
+
+        #submit-btn:hover {
+            background-color: var(--color-dark);
+        }
+
+        .feedback-box {
+            margin-top: 12px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+            font-size: 0.95em;
+            background-color: #f1f1f1;
+        }
+
+        .timestamp-ref {
+            display: block;
+            margin-top: 5px;
+            color: var(--color-dark);
+            font-style: italic;
+        }
+
+        #final-score {
+            display: none;
+            margin-top: 30px;
+            padding: 25px;
+            background-color: var(--color-secondary);
+            color: white;
+            text-align: center;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="top-nav">
+            <a href="index.html" class="nav-btn btn-home">🏠 Home</a>
+        </div>
+
+        <h1>English Quiz: Weekend Routines</h1>
+        
+        <div class="video-container">
+            <iframe 
+                src="https://www.youtube.com/embed/FRI8QjViK7s?rel=0&origin=https://www.youtube.com" 
+                title="YouTube video player" 
+                frameborder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                referrerpolicy="strict-origin-when-cross-origin"
+                allowfullscreen>
+            </iframe>
+        </div>
+
+        <form id="quiz-form" class="quiz-section">
+            
+            <div class="question">
+                <span class="instruction">Listen from 0:33 to 1:10</span>
+                <span class="question-title">1. What time does Lisa usually wake up on the weekend?</span>
+                <div class="options">
+                    <label><input type="radio" name="q1" value="A"> A. Early in the morning, around 6 or 7.</label>
+                    <label><input type="radio" name="q1" value="B"> B. Between 8 and 9 in the morning.</label>
+                    <label><input type="radio" name="q1" value="C"> C. Late in the afternoon, around 12.</label>
+                    <label><input type="radio" name="q1" value="D"> D. She wakes up at the same time as during the work week.</label>
+                </div>
+                <div id="fb-q1" class="feedback-box"></div>
+            </div>
+
+            <div class="question">
+                <span class="instruction">Listen from 1:10 to 1:25</span>
+                <span class="question-title">2. What is the first thing Lisa does after she gets out of bed?</span>
+                <div class="options">
+                    <label><input type="radio" name="q2" value="A"> A. She goes outside to the park immediately.</label>
+                    <label><input type="radio" name="q2" value="B"> B. She calls her friends to make plans.</label>
+                    <label><input type="radio" name="q2" value="C"> C. She makes a cup of coffee or green tea.</label>
+                    <label><input type="radio" name="q2" value="D"> D. She starts cleaning her room and doing laundry.</label>
+                </div>
+                <div id="fb-q2" class="feedback-box"></div>
+            </div>
+
+            <div class="question">
+                <span class="instruction">Listen from 1:25 to 1:40</span>
+                <span class="question-title">3. Where does Lisa often meet her friends for breakfast?</span>
+                <div class="options">
+                    <label><input type="radio" name="q3" value="A"> A. At a nearby cafe.</label>
+                    <label><input type="radio" name="q3" value="B"> B. At her own house.</label>
+                    <label><input type="radio" name="q3" value="C"> C. In the middle of the park.</label>
+                    <label><input type="radio" name="q3" value="D"> D. At the cinema.</label>
+                </div>
+                <div id="fb-q3" class="feedback-box"></div>
+            </div>
+
+            <div class="question">
+                <span class="instruction">Listen from 1:40 to 1:55</span>
+                <span class="question-title">4. According to the podcast, how does Lisa spend part of her afternoon?</span>
+                <div class="options">
+                    <label><input type="radio" name="q4" value="A"> A. She goes shopping for new clothes.</label>
+                    <label><input type="radio" name="q4" value="B"> B. She watches a movie at the cinema.</label>
+                    <label><input type="radio" name="q4" value="C"> C. She cleans her room and does the laundry.</label>
+                    <label><input type="radio" name="q4" value="D"> D. She visits her family in another city.</label>
+                </div>
+                <div id="fb-q4" class="feedback-box"></div>
+            </div>
+
+            <div class="question">
+                <span class="instruction">Listen from 1:55 to 2:10</span>
+                <span class="question-title">5. What does Lisa sometimes do for dinner in the evening?</span>
+                <div class="options">
+                    <label><input type="radio" name="q5" value="A"> A. She always goes to an expensive restaurant.</label>
+                    <label><input type="radio" name="q5" value="B"> B. She orders food like pizza or makes pasta with friends.</label>
+                    <label><input type="radio" name="q5" value="C"> C. She eats alone while reading a book.</label>
+                    <label><input type="radio" name="q5" value="D"> D. She only drinks green tea for dinner.</label>
+                </div>
+                <div id="fb-q5" class="feedback-box"></div>
+            </div>
+
+            <div class="question">
+                <span class="instruction">Listen from 2:10 to 2:30</span>
+                <span class="question-title">6. What does Lisa do on Sunday to get ready for the new week?</span>
+                <div class="options">
+                    <label><input type="radio" name="q6" value="A"> A. She buys a new calendar.</label>
+                    <label><input type="radio" name="q6" value="B"> B. She calls her boss to discuss work.</label>
+                    <label><input type="radio" name="q6" value="C"> C. She makes a to-do list and sets goals.</label>
+                    <label><input type="radio" name="q6" value="D"> D. She goes back to sleep for the rest of the day.</label>
+                </div>
+                <div id="fb-q6" class="feedback-box"></div>
+            </div>
+
+            <button type="button" id="submit-btn" onclick="checkAnswers()">CONTROLEREN</button>
+        </form>
+
+        <div id="final-score"></div>
+
+        <div id="footer-nav" class="footer-nav">
+            <a href="index.html" class="nav-btn btn-home">🏠 Home</a>
+            <a href="opdracht8.html" class="nav-btn btn-next">Volgende Opdracht ➡️</a>
+        </div>
+    </div>
+
+    <script>
+        // --- VOEG DIT TOE ONDERAAN JE SCRIPT TAG IN DE OPDRACHT FILE ---
+        // Verander dit ID per opdracht (7 voor opdracht7)
+        const ASSIGNMENT_ID = 7;
+
+        function saveResultToHost(score, totalVragen) {
+            // 1. Haal bestaande progressie op
+            let progress = JSON.parse(localStorage.getItem('studentProgress')) || {};
+            
+            // 2. Sla deze opdracht op
+            progress[ASSIGNMENT_ID] = {
+                completed: true,
+                score: score,
+                total: totalVragen,
+                date: new Date().toISOString()
+            };
+
+            // 3. Schrijf terug naar geheugen
+            localStorage.setItem('studentProgress', JSON.stringify(progress));
+            
+            // 4. Optioneel: Stuur een signaal naar de host pagina als die open staat
+            window.dispatchEvent(new Event('storage'));
+        }
+
+        function checkAnswers() {
+            const correctAnswers = {
+                q1: { ans: "B", ref: "at about 8 or 9 in the morning" },
+                q2: { ans: "C", ref: "Then I make a cup of coffee or green tea." },
+                q3: { ans: "A", ref: "meet friends for breakfast at a nearby cafe." },
+                q4: { ans: "C", ref: "I usually clean my room, do laundry" },
+                q5: { ans: "B", ref: "we order food like pizza or we make something... like pasta." },
+                q6: { ans: "C", ref: "I check my calendar, make a to-do list, and set goals." }
+            };
+
+            let score = 0;
+            const total = 6;
+
+            for (let i = 1; i <= total; i++) {
+                const qKey = 'q' + i;
+                const fbBox = document.getElementById('fb-' + qKey);
+                const selected = document.querySelector(`input[name="${qKey}"]:checked`);
+                
+                fbBox.style.display = "block";
+                
+                let isCorrect = selected && selected.value === correctAnswers[qKey].ans;
+                if (isCorrect) score++;
+
+                fbBox.innerHTML = `
+                    <span style="color: ${isCorrect ? '#2e7d32' : '#c62828'}; font-weight: 600;">
+                        ${isCorrect ? '✅ Correct!' : '❌ Incorrect. The correct answer was ' + correctAnswers[qKey].ans}
+                    </span>
+                    <span class="timestamp-ref">Key moment: "${correctAnswers[qKey].ref}"</span>
+                `;
+            }
+
+            const scoreDiv = document.getElementById('final-score');
+            scoreDiv.style.display = "block";
+            scoreDiv.innerHTML = `Quiz finished! You got ${score} out of ${total} correct!`;
+            
+            // --- IMPLEMENTATIE OPSLAAN & NAVIGATIE ---
+            
+            // 1. Sla resultaat op
+            saveResultToHost(score, total);
+
+            // 2. Verberg de controleer knop
+            document.getElementById("submit-btn").style.display = "none";
+
+            // 3. Toon de navigatieknoppen
+            const footerNav = document.getElementById("footer-nav");
+            footerNav.style.display = "flex";
+
+            // 4. Scroll naar beneden zodat de knoppen zichtbaar zijn
+            setTimeout(() => {
+                window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+            }, 100);
+        }
+    </script>
+</body>
+</html>
