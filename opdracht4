@@ -212,7 +212,7 @@
 
     <div class="container">
         <div class="top-nav">
-            <a href="index.html" class="nav-btn btn-home">🏠 Home</a>
+            <a href="index.html" class="nav-btn btn-home"> Home</a>
         </div>
 
         <h1>Film Quiz: Christopher Robin</h1>
@@ -296,7 +296,7 @@
         <div id="final-score"></div>
 
         <div id="footer-nav" class="footer-nav">
-            <a href="index.html" class="nav-btn btn-home">🏠 Home</a>
+            <a href="index.html" class="nav-btn btn-home"> Home</a>
             <a href="index.html" class="nav-btn btn-next">Klaar / Naar Overzicht 🏁</a>
         </div>
     </div>
