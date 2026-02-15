@@ -297,7 +297,7 @@
 
         <div id="footer-nav" class="footer-nav">
             <a href="index.html" class="nav-btn btn-home"> Home</a>
-            <a href="index.html" class="nav-btn btn-next">Klaar / Naar Overzicht 🏁</a>
+            <a href="opdracht5.html" class="nav-btn btn-next">Volgende Opdracht </a>
         </div>
     </div>
 
