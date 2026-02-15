@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Quiz - Smartphone Verslaving</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #628141;   /* Groen */
+            --color-secondary: #B0BE9C; /* Lichtgroen */
+            --color-bg: #D9E5F3;        /* Lichtblauw */
+            --color-dark: #093A47;      /* Donkerblauw/Petrol */
+        }
+
+        body {
+            background-color: var(--color-bg);
+            font-family: 'Poppins', sans-serif;
+            font-weight: 200;
+            color: var(--color-dark);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1, h2, .question-title {
+            font-weight: 600;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            box-sizing: border-box;
+        }
+
+        /* --- NIEUWE STIJLEN VOOR KNOPPEN --- */
+        .top-nav {
+            width: 100%;
+            display: flex;
+            justify-content: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .nav-btn {
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-home {
+            background-color: var(--color-dark);
+            color: white;
+        }
+
+        .btn-home:hover {
+            background-color: #0d5263;
+        }
+
+        .btn-next {
+            background-color: var(--color-primary);
+            color: white;
+        }
+
+        .btn-next:hover {
+            background-color: #4a6330;
+        }
+
+        .footer-nav {
+            margin-top: 30px;
+            display: none; /* Verborgen tot na de quiz */
+            justify-content: center;
+            gap: 15px;
+            border-top: 2px solid var(--color-secondary);
+            padding-top: 20px;
+        }
+        /* ----------------------------------- */
+
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            height: 0;
+            overflow: hidden;
+            border-radius: 10px;
+            background: #000;
+            margin-bottom: 30px;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .quiz-section {
+            border-top: 2px solid var(--color-secondary);
+            padding-top: 20px;
+        }
+
+        .question {
+            margin-bottom: 30px;
+        }
+
+        .question-title {
+            margin-bottom: 12px;
+            font-size: 1.1em;
+            display: block;
+            line-height: 1.4;
+        }
+
+        .instruction {
+            font-size: 0.85em;
+            color: var(--color-primary);
+            margin-bottom: 5px;
+            display: block;
+            font-weight: 600;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        label {
+            padding: 12px;
+            background: #f8fafc;
+            border: 1px solid var(--color-secondary);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        label:hover {
+            background: var(--color-secondary);
+            color: white;
+        }
+
+        input[type="radio"] {
+            margin-right: 12px;
+            accent-color: var(--color-primary);
+            transform: scale(1.2);
+        }
+
+        #submit-btn {
+            background-color: var(--color-primary);
+            color: white;
+            border: none;
+            padding: 18px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            transition: background 0.3s;
+        }
+
+        #submit-btn:hover {
+            background-color: var(--color-dark);
+        }
+
+        .feedback-box {
+            margin-top: 12px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+            font-size: 0.95em;
+            background-color: #f1f1f1;
+        }
+
+        .timestamp-ref {
+            display: block;
+            margin-top: 5px;
+            color: var(--color-dark);
+            font-style: italic;
+        }
+
+        #final-score {
+            display: none;
+            margin-top: 30px;
+            padding: 25px;
+            background-color: var(--color-secondary);
+            color: white;
+            text-align: center;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="top-nav">
+            <a href="index.html" class="nav-btn btn-home"> Home</a>
+        </div>
+
+        <h1>Video Quiz: Smartphone & Brain Rot</h1>
+        
+        <div class="video-container">
+            <iframe 
+                src="https://www.youtube.com/embed/cM-a2qzjcas?rel=0&origin=https://www.youtube.com" 
+                title="YouTube video player" 
+                frameborder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                referrerpolicy="strict-origin-when-cross-origin"
+                allowfullscreen>
+            </iframe>
+        </div>
+
+        <form id="quiz-form" class="quiz-section">
+            
+            <div class="question">
+                <span class="instruction">Luister van 0:00 tot 0:30</span>
+                <span class="question-title">1. Volgens een onderzoek scrollt de gemiddelde smartphonegebruiker heel wat af. Met welke afstand wordt het scrollen per jaar vergeleken?</span>
+                <div class="options">
+                    <label><input type="radio" name="q1" value="A"> A. Met de afstand van één marathon.</label>
+                    <label><input type="radio" name="q1" value="B"> B. Met de afstand van drie marathons.</label>
+                    <label><input type="radio" name="q1" value="C"> C. Met een wandeling naar de dichtstbijzijnde stad.</label>
+                    <label><input type="radio" name="q1" value="D"> D. Met een rondje om de hele wereld.</label>
+                </div>
+                <div id="fb-q1" class="feedback-box"></div>
+            </div>
+
+            <div class="question">
+                <span class="instruction">Luister van 0:30 tot 1:10</span>
+                <span class="question-title">2. Katy Paige Rosenberg vertelt over haar verslaving. Hoeveel uur per dag zat zij gemiddeld op haar telefoon?</span>
+                <div class="options">
+                    <label><input type="radio" name="q2" value="A"> A. Ongeveer drie uur.</label>
+                    <label><input type="radio" name="q2" value="B"> B. Ongeveer zes uur.</label>
+                    <label><input type="radio" name="q2" value="C"> C. Ongeveer negen uur.</label>
+                    <label><input type="radio" name="q2" value="D"> D. De hele dag en nacht.</label>
+                </div>
+                <div id="fb-q2" class="feedback-box"></div>
+            </div>
+
+            <div class="question">
+                <span class="instruction">Luister van 1:10 tot 1:40</span>
+                <span class="question-title">3. In de video worden MRI-beelden van hersenen getoond. Wat is er te zien bij hersenen die verslaafd zijn aan een smartphone?</span>
+                <div class="options">
+                    <label><input type="radio" name="q3" value="A"> A. De hersenen zijn helemaal grijs en vertonen geen enkele activiteit.</label>
+                    <label><input type="radio" name="q3" value="B"> B. De hersenen zijn erg kleurrijk (rood) omdat ze extra hard moeten werken voor simpele taken.</label>
+                    <label><input type="radio" name="q3" value="C"> C. De hersenen zien er precies hetzelfde uit als die van mensen die geen telefoon hebben.</label>
+                    <label><input type="radio" name="q3" value="D"> D. De hersenen worden groter en sterker door alle informatie.</label>
+                </div>
+                <div id="fb-q3" class="feedback-box"></div>
+            </div>
+
+            <div class="question">
+                <span class="instruction">Luister van 1:40 tot 2:10</span>
+                <span class="question-title">4. Wat is een gevolg van "brain rot" (hersenverrotting) als een leerling in de klas zit?</span>
+                <div class="options">
+                    <label><input type="radio" name="q4" value="A"> A. De leerling kan heel snel meeschrijven met de docent.</label>
+                    <label><input type="radio" name="q4" value="B"> B. De leerling is heel rustig en valt bijna in slaap.</label>
+                    <label><input type="radio" name="q4" value="C"> C. De leerling is snel afgeleid en let niet op wat de docent vertelt.</label>
+                    <label><input type="radio" name="q4" value="D"> D. De leerling haalt alleen maar onvoldoendes voor wiskunde.</label>
+                </div>
+                <div id="fb-q4" class="feedback-box"></div>
+            </div>
+
+            <div class="question">
+                <span class="instruction">Luister van 2:10 tot 2:40</span>
+                <span class="question-title">5. Katy vertelt dat TikTok invloed had op haar gedrag. Wat ging zij doen door de video's die ze zag?</span>
+                <div class="options">
+                    <label><input type="radio" name="q5" value="A"> A. Ze begon met het maken van haar eigen muziekvideo's.</label>
+                    <label><input type="radio" name="q5" value="B"> B. Ze ging meer sporten om net zo fit te worden als de mensen op TikTok.</label>
+                    <label><input type="radio" name="q5" value="C"> C. Ze begon met "zelfmedicatie" (drugsgebruik) om erbij te horen.</label>
+                    <label><input type="radio" name="q5" value="D"> D. Ze besloot om haar telefoon weg te gooien en nooit meer te gebruiken.</label>
+                </div>
+                <div id="fb-q5" class="feedback-box"></div>
+            </div>
+
+            <div class="question">
+                <span class="instruction">Luister van 2:40 tot 3:10</span>
+                <span class="question-title">6. Tijdens haar behandeling moest Katy haar telefoon inleveren. Wat hielp haar om zich beter te voelen?</span>
+                <div class="options">
+                    <label><input type="radio" name="q6" value="A"> A. De hele dag televisie kijken in de kliniek.</label>
+                    <label><input type="radio" name="q6" value="B"> B. Creatieve dingen doen, zoals tekenen en gitaar spelen.</label>
+                    <label><input type="radio" name="q6" value="C"> C. Veel praten met andere jongeren over sociale media.</label>
+                    <label><input type="radio" name="q6" value="D"> D. Computergames spelen zonder internetverbinding.</label>
+                </div>
+                <div id="fb-q6" class="feedback-box"></div>
+            </div>
+
+            <button type="button" id="submit-btn" onclick="checkAnswers()">CONTROLEREN</button>
+        </form>
+
+        <div id="final-score"></div>
+
+        <div id="footer-nav" class="footer-nav">
+            <a href="index.html" class="nav-btn btn-home"> Home</a>
+            <a href="opdracht9.html" class="nav-btn btn-next">Volgende Opdracht </a>
+        </div>
+    </div>
+
+    <script>
+        // --- VOEG DIT TOE ONDERAAN JE SCRIPT TAG IN DE OPDRACHT FILE ---
+        // Verander dit ID per opdracht (8 voor opdracht8)
+        const ASSIGNMENT_ID = 8;
+
+        function saveResultToHost(score, totalVragen) {
+            // 1. Haal bestaande progressie op
+            let progress = JSON.parse(localStorage.getItem('studentProgress')) || {};
+            
+            // 2. Sla deze opdracht op
+            progress[ASSIGNMENT_ID] = {
+                completed: true,
+                score: score,
+                total: totalVragen,
+                date: new Date().toISOString()
+            };
+
+            // 3. Schrijf terug naar geheugen
+            localStorage.setItem('studentProgress', JSON.stringify(progress));
+            
+            // 4. Optioneel: Stuur een signaal naar de host pagina als die open staat
+            window.dispatchEvent(new Event('storage'));
+        }
+
+        function checkAnswers() {
+            const correctAnswers = {
+                q1: { ans: "B", ref: "That's three marathons." },
+                q2: { ans: "C", ref: "Probably like... nine [hours]?" },
+                q3: { ans: "B", ref: "Showing where the brain is working extra hard... compared to a nonaddicted brain." },
+                q4: { ans: "C", ref: "Less attentive and more easily distracted... not attending to what the teacher is trying to teach." },
+                q5: { ans: "C", ref: "TikTok would kind of push these videos... and I started self-medicating." },
+                q6: { ans: "B", ref: "From drawing to playing guitar. It helped rewire her brain." }
+            };
+
+            let score = 0;
+            const total = 6;
+
+            for (let i = 1; i <= total; i++) {
+                const qKey = 'q' + i;
+                const fbBox = document.getElementById('fb-' + qKey);
+                const selected = document.querySelector(`input[name="${qKey}"]:checked`);
+                
+                fbBox.style.display = "block";
+                
+                let isCorrect = selected && selected.value === correctAnswers[qKey].ans;
+                if (isCorrect) score++;
+
+                fbBox.innerHTML = `
+                    <span style="color: ${isCorrect ? '#2e7d32' : '#c62828'}; font-weight: 600;">
+                        ${isCorrect ? '✅ Goed!' : '❌ Onjuist. Het juiste antwoord was ' + correctAnswers[qKey].ans}
+                    </span>
+                    <span class="timestamp-ref">Bevestiging: "${correctAnswers[qKey].ref}"</span>
+                `;
+            }
+
+            const scoreDiv = document.getElementById('final-score');
+            scoreDiv.style.display = "block";
+            scoreDiv.innerHTML = `Je hebt de quiz afgerond! Score: ${score} van de ${total} goed.`;
+            
+            // --- IMPLEMENTATIE OPSLAAN & NAVIGATIE ---
+            
+            // 1. Sla resultaat op
+            saveResultToHost(score, total);
+
+            // 2. Verberg de controleer knop
+            document.getElementById("submit-btn").style.display = "none";
+
+            // 3. Toon de navigatieknoppen
+            const footerNav = document.getElementById("footer-nav");
+            footerNav.style.display = "flex";
+
+            // 4. Scroll naar beneden zodat de knoppen zichtbaar zijn
+            setTimeout(() => {
+                window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+            }, 100);
+        }
+    </script>
+</body>
+</html>
