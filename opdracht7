@@ -211,7 +211,7 @@
 
     <div class="container">
         <div class="top-nav">
-            <a href="index.html" class="nav-btn btn-home">🏠 Home</a>
+            <a href="index.html" class="nav-btn btn-home"> Home</a>
         </div>
 
         <h1>English Quiz: Weekend Routines</h1>
@@ -307,8 +307,8 @@
         <div id="final-score"></div>
 
         <div id="footer-nav" class="footer-nav">
-            <a href="index.html" class="nav-btn btn-home">🏠 Home</a>
-            <a href="opdracht8.html" class="nav-btn btn-next">Volgende Opdracht ➡️</a>
+            <a href="index.html" class="nav-btn btn-home"> Home</a>
+            <a href="opdracht8.html" class="nav-btn btn-next">Volgende Opdracht </a>
         </div>
     </div>
 
